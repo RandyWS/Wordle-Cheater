@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
-const datamuse = require("datamuse");
+import { _fetchWords } from "../store";
+import { useDispatch, useSelector } from "react-redux";
 
 /**
  * COMPONENT
  */
 const Landing = (props) => {
+  const dispatch = useDispatch();
   const [query, setQuery] = useState("");
+  const { possibleWords } = useSelector((state) => state.words);
 
-  const handleSubmit = (ev) => {
+  const handleSubmit = async (ev) => {
     ev.preventDefault();
-    datamuse.request("words?sp=t??k").then((json) => {
-      console.log(json);
-      //do it!
-    });
+
+    dispatch(_fetchWords(query));
   };
+
+  console.log("possible Words", possibleWords);
 
   return (
     <div>

@@ -7,18 +7,11 @@ import store from "./store";
 import App from "./App";
 
 ReactDOM.render(
-  <Router history={history}>
-    <App />
-  </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      <App />
+    </Router>
+  </Provider>,
 
   document.getElementById("app")
 );
-
-// ReactDOM.render(
-//   <Provider store={store}>
-//     <Router history={history}>
-//       <App />
-//     </Router>
-//   </Provider>,
-//   document.getElementById('app')
-// )

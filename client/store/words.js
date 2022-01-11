@@ -11,13 +11,26 @@ export const setFetchedWords = (words) => {
   };
 };
 
-export const _setFetchedWords = (word) => {
+export const _fetchWords = (query) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/algos/${id}`);
+      const base = "https://api.datamuse.com/words?sp=";
+      let words = [];
 
-      if (data.id) {
-        dispatch(setFetchedWords(data));
+      const newPromise = new Promise((res, rej) => {
+        res(
+          fetch("https://api.datamuse.com/words?sp=?????")
+            .then((res) => res.json())
+            .then((res) => {
+              res.map((resObj) => words.push(resObj.word));
+            })
+        );
+      });
+
+      await newPromise;
+
+      if (words.length) {
+        dispatch(setFetchedWords(words));
       }
     } catch (error) {
       console.log(error);
