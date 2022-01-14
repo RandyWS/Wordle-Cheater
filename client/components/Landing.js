@@ -7,34 +7,96 @@ import { useDispatch, useSelector } from "react-redux";
  */
 const Landing = (props) => {
   const dispatch = useDispatch();
-  const [query, setQuery] = useState("");
-  const { possibleWords } = useSelector((state) => state.words);
+  const [word, setWord] = useState(new Array(5).fill(""));
+  const [excluded, setExcluded] = useState([]);
+  const [included, setIncluded] = useState([]);
+  const { possibleWords, excludedLetters, includedLetters } = useSelector(
+    (state) => state.words
+  );
 
-  const handleSubmit = async (ev) => {
+  const handleSubmitWord = async (ev) => {
     ev.preventDefault();
 
-    dispatch(_fetchWords(query));
+    dispatch(_fetchWords(word));
+  };
+
+  const setLetter = (lett, idx) => {
+    let currWord = [...word];
+    currWord[idx] = lett;
+    setWord(currWord);
+  };
+
+  const setIncludedLetters = (letters) => {
+    let currIncluded = [...included];
+    letters.forEach((lett) => {
+      if (!currIncluded.includes(lett.toLowerCase())) {
+        currIncluded.push(lett);
+      }
+    });
+    setExcluded(currIncluded.sort());
+  };
+
+  const setExcludedLetters = (letters) => {
+    let currExcluded = [...excluded];
+    letters.forEach((lett) => {
+      if (!currExcluded.includes(lett.toLowerCase())) {
+        currExcluded.push(lett);
+      }
+    });
+    setExcluded(currExcluded.sort());
   };
 
   console.log("possible Words", possibleWords);
+  console.log("word", word);
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           <label htmlFor="query">
-            <small>Query</small>
+            <small>Any Confirmed Letters?</small>
+          </label>
+          {word.map((lett, idx) => {
+            return (
+              <input
+                key={idx}
+                name="query"
+                type="text"
+                value={lett}
+                onChange={(ev) => setLetter(ev.target.value, idx)}
+              />
+            );
+          })}
+        </div>
+
+        <div>
+          <label htmlFor="included">
+            <small>Letters in word, not in correct place</small>
           </label>
           <input
-            name="query"
+            name="included"
             type="text"
-            value={query}
-            onChange={(ev) => setQuery(ev.target.value)}
+            value={included}
+            onChange={(ev) => setIncludedLetters(ev.target.value)}
           />
         </div>
 
         <div>
-          <button type="submit">Enter</button>
+          <label htmlFor="excluded">
+            <small>Excluded Letters</small>
+          </label>
+          <input
+            name="excluded"
+            type="text"
+            value={excluded}
+            onChange={(ev) => setExcludedLetters(ev.target.value)}
+          />
+        </div>
+
+        <div>
+          <button type="submit" onClick={handleSubmitWord}>
+            Enter
+          </button>
         </div>
       </form>
     </div>
